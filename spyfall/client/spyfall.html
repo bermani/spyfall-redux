@@ -1,0 +1,317 @@
+<head>
+  <meta charset="utf-8">
+  <title>Spyfall</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600&subset=latin,vietnamese,latin-ext' rel='stylesheet' type='text/css'>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/normalize.css" type="text/css">
+  <link rel="stylesheet" href="css/skeleton.css" type="text/css">
+  <link rel="stylesheet" href="css/styles.css" type="text/css">
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-9814747448554174",
+    enable_page_level_ads: true
+  });
+</script>
+</head>
+
+<body></body>
+
+<template name="main">
+  <div dir="{{ textDirection }}" class="container dir-{{textDirection}} lang-{{ language }}">
+    <div class="main-content">
+      {{> Template.dynamic template=whichView}}
+
+      <hr>
+
+      {{> footer }}
+    </div>
+  </div>
+</template>
+
+<template name="startMenu">
+  <div class="main-menu">
+    <h4>{{_ "ui.welcome to spyfall" }} <h4 style="color:Tomato">Redux</h4></h4>
+
+    <hr>
+
+    <div class="button-container">
+      <button class="button button-primary" id="btn-new-game">{{_ "ui.new game" }}</button>
+      <button class="button button-primary" id="btn-join-game">{{_ "ui.join game" }}</button>
+      <br>
+      <button class="button button-primary" id="btn-how-to-play">{{_ "ui.how to play"}}</button>
+    </div>
+
+    {{# if announcement }}
+      <p class="announcement">{{{ announcement }}}</p>
+    {{/if}}
+
+    {{# if alternativeURL }}
+      <p class="high-load-message">Do things seem slow or broken? We're probably under heavy load!<br>Try this alternative URL: <a href="{{ alternativeURL }}">{{ alternativeURL }}</a></p>
+    {{/if}}
+
+
+  </div>
+
+</template>
+
+<template name="howToPlay">
+
+  <br><h4>How to Play Spyfall</h4><br>
+
+  <p>Spyfall is a social deduction game of trickery and trust.
+  One player is secretly selected to be the <strong style="color:Tomato">Spy</strong>, all other players are non-spies.
+  All non-spies are given the same location. The Spy is not given this information. The Spy's objective is to figure out the location, while the non-spies try to figure out the Spy's identity.</p>
+  <p>Players take turns by choosing another player and asking them a question, starting with the player designated as <div class="first-player-indicator">{{{_ "ui.first" }}}</div>.
+  Questions should be specific enough to reveal the Spy, but broad enough not to give away the location! For example, one could ask "Hey John, what do you like to wear here?"
+  The next question-asker is the player who was asked last. At any point in the game, the Spy can reveal themselves and attempt to guess the location, and the game ends.
+  At any point in the game, any player (including spies!) can vote for another player as the suspected spy.
+  Once a majority of players are in agreement, the game ends.</p>
+
+  <u>The non-spies win if</u>:
+  <ul>
+  <li>Players come to a majority agreement on the suspected spy, and their choice is correct.</li>
+  <li>The Spy guesses the wrong location.</li>
+  </ul>
+  <u>The Spy wins if</u>:
+  <ul>
+  <li>Players come to a majority agreement on the suspected spy, and their choice is <strong>not</strong> correct.</li>
+  <li>The Spy correctly guesses the location.</li>
+  <li>Time runs out without players coming to a majority agreement.</li>
+  </ul>
+
+  <a href="http://international.hobbyworld.ru/download/rules/international/Spyfall_rules_ENG.pdf" target="_blank">
+    Original Spyfall Rules PDF </a>
+  <br><br>
+  <button class="btn-back button-primary">{{_ "ui.back" }}</button>
+  <button class="btn-strategy button-primary">{{_ "ui.strategy" }}</button>
+</template>
+
+<template name="strategyInfo">
+
+  <br><h4>Strategy</h4>
+  <p><strong>As the <strong style="color:Tomato">Spy</strong></strong>, go with everything the other players do. Laugh if everyone laughs.
+     If someone says the last answer gave it away, say something like "yeah that was so obvious". If a player suspects a different player, agree with them.
+     Never hesitate with your answers. Any hesitations, especially on simple questions, will give you away instantly. If you're given a 50/50, just pick one and stick to it.</p>
+  <p><strong>As a non-spy</strong>, avoid asking 50/50 questions. They narrow down around half of the locations for the Spy, and a correct answer gives you no information.
+    It's much better to give open ended questions that allow the responder to answer creatively than simple yes/nos or either/ors. Don't be afraid to ask weird questions to throw off the spy.
+    It's sometimes a good strategy to ask a question that has absolutely nothing to do with the location in order to trick the spy and catch them if they respond incorrectly.</p>
+  <h4>Scoring</h4>
+  <p>Want to prove you're smarter than all your friends? Keep track of your score with points.
+    <ul>
+    <li>If the non-spies win, all non-spies gain a point.</li>
+    <li>If the non-spies vote incorrectly, the Spy gains two points and the player who was chosen incorrectly loses a point.</li>
+    <li>If the Spy reveals himself and guesses correctly, the Spy gains three points.</li>
+    </ul>
+    </p>
+
+
+  <br>
+  <button class="btn-back button-primary">{{_ "ui.back" }}</button>
+</template>
+
+
+<template name="lobby">
+  <h4>
+    {{#if isLoading }}
+      <span class="spinner"></span>
+
+    {{else}}
+      {{_ "ui.waiting for players" }}
+    {{/if}}
+  </h4>
+
+  <div class="access-code">
+    {{_ "ui.access code" }}:
+    <span>{{ game.accessCode }}</span>
+  </div>
+
+  <div class="qrcode-container" style="display: none;">
+    <div id="qrcode" class="qrcode"></div>
+
+    <div id="access-link" class="access-link">
+      <a href="{{ accessLink }}">{{ accessLink }}</a>
+    </div>
+  </div>
+
+  <hr>
+
+  <ol class="lobby-player-list">
+    {{#each players }}
+      <li>
+        {{ name }}
+
+        {{#if isCurrent }}
+          <a href="#" class="btn-edit-player" data-player-id="{{ _id }}">
+            <i class="fa fa-pencil"></i>
+          </a>
+        {{else}}
+          <a href="#" class="btn-remove-player" data-player-id="{{ _id }}">
+            <i class="fa fa-close"></i>
+          </a>
+        {{/if}}
+      </li>
+    {{/each}}
+  </ol>
+
+  <hr>
+
+  <div>
+    Deck: <h4 style="color:Tomato">{{game.deckname}}</h4>
+  </div>
+
+  <div class="button-container">
+    <button class="btn-start button-primary">{{_ "ui.start game" }}</button>
+    <button class="btn-leave button-primary">{{_ "ui.leave game" }}</button>
+  </div>
+</template>
+
+<template name="gameView">
+  <h4><a class="game-countdown {{#if gameFinished }}finished{{/if}} {{#if game.paused }}paused{{/if}}">{{{ timeRemaining }}}</a></h4>
+
+  <div class="status-container">
+    <button class="btn-toggle-status">{{_ "ui.show hide" }}</button>
+
+    <div class="status-container-content">
+      {{#if player.isSpy }}
+        <div class="player-status player-status-spy">{{_ "ui.you are the spy" }}</div>
+      {{else}}
+        <div class="player-status player-status-not-spy">{{{_ "ui.you are not the spy" }}}</div>
+
+        <div class="current-location">
+          <div class="current-location-header">
+            {{_ "ui.the location" }}:
+          </div>
+          <div class="current-location-name">
+            {{_ game.location.name }}
+          </div>
+        </div>
+
+        <div class="current-role">
+          <div class="current-role-header">
+            {{_ "ui.your role" }}:
+          </div>
+          <div class="current-role-name">
+            {{_ player.role }}
+          </div>
+        </div>
+      {{/if}}
+    </div>
+  </div>
+
+  <h5>{{_ "ui.players" }}</h5>
+  <ul class="ingame-player-list">
+    {{#each players }}
+      <li>
+        <div class="player-name">
+          {{ name }}
+          {{#if isFirstPlayer}}
+            <div class="first-player-indicator">{{{_ "ui.first" }}}</div>
+          {{/if}}
+        </div>
+      </li>
+    {{/each}}
+  </ul>
+
+  <div class="u-cf"></div>
+
+  <h5>{{_ "ui.location reference" }}</h5>
+  <ul class="location-list">
+    {{#each game.decklist }}
+      <li>
+        <div class="location-name">{{_ name }}</div>
+      </li>
+    {{/each}}
+  </ul>
+
+  <hr>
+
+  <div class="button-container">
+    <button class="btn-end button-primary">{{_ "ui.end game" }}</button>
+
+    <button class="btn-leave button-primary">{{_ "ui.leave game" }}</button>
+  </div>
+</template>
+
+<template name="createGame">
+  <h4>
+    {{#if isLoading }}
+      <span class="spinner"></span>
+    {{else}}
+      {{_ "ui.welcome to spyfall" }}
+    {{/if}}
+  </h4>
+
+  <hr>
+
+  <form id="create-game">
+    <div class="">
+      <input type="text" id="player-name" name="playerName" placeholder='{{_ "ui.enter your name" }}'>
+      <select id="game-deck" name="deck" class="minimal">
+        <option value=0>Spyfall Classic</option>
+        <option value=1>Spyfall 2</option>
+        <option value=2>Spyfall: Fantasy Edition</option>
+        <option value=3>Spyfall: Sci Fi Edition</option>
+      </select>
+      <div class="button-container">
+        <input type="submit" class = "button-primary" value='{{_ "ui.create game" }}'>
+        <button class="btn-back button-primary">{{_ "ui.back" }}</button>
+      </div>
+    </div>
+  </form>
+</template>
+
+<template name="joinGame">
+  <h4>
+    {{#if isLoading }}
+      <span class="spinner"></span>
+    {{else}}
+      {{_ "ui.welcome to spyfall" }}
+    {{/if}}
+  </h4>
+
+  <hr>
+
+  <form id="join-game">
+    <div>
+      <input autocorrect="off" autocapitalize="off" type="text" id="access-code" name="accessCode" placeholder='{{_ "ui.enter an access code" }}'>
+      <input type="text" id="player-name" name="playerName" placeholder='{{_ "ui.enter your name" }}'>
+
+      {{> flashMessages}}
+
+      <div class="button-container">
+        <input type="submit" class="button-primary" value='{{_ "ui.join" }}'>
+        <button class="btn-back button-primary">{{_ "ui.back" }}</button>
+      </div>
+    </div>
+  </form>
+</template>
+
+<template name="footer">
+  {{#if languages }}
+    <div dir="ltr" class="languages">
+      <select class="language-select">
+        {{#each languages }}
+            <option value="{{code}}" {{selected}}>{{toCapitalCase languageDetails.name}}</option>
+        {{/each}}
+      </select>
+      <ul class="language-list">
+        {{#each languages }}
+          <li>
+            <a class="btn-set-language" href="#" data-language="{{code}}">{{toCapitalCase languageDetails.name}}</a>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/if}}
+
+  <div class="footer">
+    {{{_ "ui.footer" }}}
+    <br>
+    <a href="https://github.com/mpcovcd/spyfall" target="_blank">https://github.com/mpcovcd/spyfall</a>
+    <br>modded by your boi isaac
+  </div>
+</template>

@@ -1,0 +1,8 @@
+{
+  "galaxy.meteor.com": {
+    "env": {
+      "MONGO_URL": "mongodb://user:robotboy@ds119565.mlab.com:19565/spyfall"
+
+    }
+  }
+}
