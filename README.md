@@ -4,7 +4,7 @@ Spyfall on your mobile device!
 
 New features and content! More decks, a new look, QOL improvements and some secrets ;)
 
-Play at [spyfall.isaacdb.com](https://spyfall.isaacdb.com)!
+Play at [spyfall.isaacdb.com](http://spyfall.isaacdb.com)!
 
 Modified from the [original repo](https://github.com/mpcovcd/spyfall)
 
